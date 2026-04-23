@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "CODAR Shield",
+  "version": "2.1.0",
+  "description": "Cyber Offense Detection & Reporting — Real-time toxicity scanner for Twitter/X, YouTube, Instagram, WhatsApp Web, Facebook, and any website.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["activeTab", "storage", "contextMenus", "notifications"],
+  "host_permissions": [
+    "https://twitter.com/*",
+    "https://x.com/*",
+    "https://www.youtube.com/*",
+    "https://www.instagram.com/*",
+    "https://web.whatsapp.com/*",
+    "https://www.facebook.com/*",
+    "https://fb.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

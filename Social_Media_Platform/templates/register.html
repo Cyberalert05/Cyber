@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    <title> Viraly | Login</title>
+    <title> Viraly | Register</title>
     <link rel="icon" type="image/png" href="static/assets/img/favicon.png" />
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:600,700,800,900" rel="stylesheet">
@@ -49,7 +49,7 @@
                             <img src="static/assets/img/logo/logo-white.png" alt="">
                         </div>
                     </div>
-                    <!--Login Form-->
+                    <!--Register Form-->
                     <div class="hero-body">
                         <div class="form-wrapper">
                             <!--Avatar-->
@@ -64,7 +64,7 @@
                                 <div class="login-form">
                                     <div class="field">
                                         <div class="control">
-                                            <input class="input email-input" type="text" placeholder="Username" name="username">
+                                            <input class="input email-input" type="text" placeholder="Full Name" name="fullname" required>
                                             <div class="input-icon">
                                                 <i data-feather="user"></i>
                                             </div>
@@ -72,7 +72,15 @@
                                     </div>
                                     <div class="field">
                                         <div class="control">
-                                            <input class="input password-input" type="password" name="password" placeholder="●●●●●●●">
+                                            <input class="input email-input" type="text" placeholder="Username" name="username" required>
+                                            <div class="input-icon">
+                                                <i data-feather="user"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="control">
+                                            <input class="input password-input" type="password" name="password" placeholder="●●●●●●●" required>
                                             <div class="input-icon">
                                                 <i data-feather="lock"></i>
                                             </div>
@@ -80,11 +88,11 @@
                                     </div>
                                     <div class="field">
                                         <div class="control">
-                                            <button class="button is-solid primary-button raised is-rounded is-fullwidth">Login</button>
+                                            <button class="button is-solid primary-button raised is-rounded is-fullwidth">Register</button>
                                         </div>
                                     </div>
                                     <div style="text-align:center; margin-top: 10px;">
-                                        <p>Don't have an account? <a href="/register">Register here</a></p>
+                                        <p>Already have an account? <a href="/login">Login here</a></p>
                                     </div>
                                     {% if error %}
                                         <p class="small" style="color:red;text-align:center;margin-top:10px;">{{ error }}</p>
@@ -106,6 +114,5 @@
     <script src="static/assets/js/global.js"></script>
     <script src="static/assets/js/main.js"></script>
 </body>
-
 
 </html>

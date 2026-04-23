@@ -1,0 +1,123 @@
+/* CODAR Shield v2.0 — Content Script Styles */
+/* Surgical, per-element blur with proper click-to-reveal. */
+
+/* ===================== CODAR WRAP ELEMENT ===================== */
+/* We wrap ONLY the flagged text in a <span class="codar-shield-wrap"> */
+.codar-shield-wrap {
+    display: inline !important;
+    position: relative !important;
+    border-radius: 4px !important;
+    transition: filter 0.3s ease, background 0.3s ease !important;
+    cursor: pointer !important;
+}
+
+/* ===================== BLUR STATE ===================== */
+.codar-blur {
+    filter: blur(6px) !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+}
+
+/* Lighten blur on hover to hint it's clickable */
+.codar-blur:hover {
+    filter: blur(3px) !important;
+}
+
+/* Revealed state — no blur */
+.codar-blur.codar-revealed,
+.codar-shield-wrap.codar-revealed {
+    filter: none !important;
+    user-select: auto !important;
+    -webkit-user-select: auto !important;
+}
+
+/* ===================== SEVERITY OUTLINES ===================== */
+[data-codar-flagged="toxic"] {
+    outline: 2px solid rgba(255, 65, 108, 0.6) !important;
+    outline-offset: 1px !important;
+    border-radius: 3px !important;
+    background: rgba(255, 65, 108, 0.06) !important;
+}
+
+[data-codar-flagged="warning"] {
+    outline: 2px solid rgba(255, 193, 7, 0.5) !important;
+    outline-offset: 1px !important;
+    border-radius: 3px !important;
+    background: rgba(255, 193, 7, 0.04) !important;
+}
+
+/* Remove outlines when revealed */
+.codar-revealed[data-codar-flagged] {
+    outline: 2px dashed rgba(56, 239, 125, 0.4) !important;
+    background: transparent !important;
+}
+
+/* ===================== HOVER TOOLTIP ===================== */
+.codar-blur::after {
+    content: '🛡️ Click to reveal';
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    background: rgba(15, 12, 41, 0.92) !important;
+    color: #fff !important;
+    padding: 4px 12px !important;
+    border-radius: 6px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    letter-spacing: 0.3px !important;
+    white-space: nowrap !important;
+    z-index: 2147483647 !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+    transition: opacity 0.15s ease !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(102, 126, 234, 0.3) !important;
+}
+
+.codar-blur:hover::after {
+    opacity: 1 !important;
+}
+
+/* Don't show tooltip on revealed items */
+.codar-blur.codar-revealed::after {
+    display: none !important;
+}
+
+/* ===================== PLATFORM-SPECIFIC TWEAKS ===================== */
+
+/* Twitter/X: ensure tweet text wraps correctly */
+[data-testid="tweetText"] .codar-shield-wrap {
+    display: inline !important;
+}
+
+/* YouTube: comments */
+ytd-comment-renderer .codar-shield-wrap {
+    display: inline !important;
+}
+
+/* WhatsApp Web: message bubbles */
+.message-in .codar-shield-wrap,
+.message-out .codar-shield-wrap {
+    display: inline !important;
+}
+
+/* Instagram: spans in posts/comments */
+article .codar-shield-wrap {
+    display: inline !important;
+}
+
+/* ===================== ANIMATION ===================== */
+@keyframes codar-fade-in {
+    from {
+        outline-color: transparent;
+    }
+    to {
+        outline-color: rgba(255, 65, 108, 0.6);
+    }
+}
+
+[data-codar-flagged] {
+    animation: codar-fade-in 0.4s ease-out !important;
+}

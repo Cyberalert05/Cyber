@@ -6,9 +6,8 @@ from werkzeug.utils import secure_filename
 from opengraph import OpenGraph
 import json
 import prediction_models
-import torch
-from BERT import BERT
-# import user as User
+import os
+from dotenv import load_dotenv
 
 # toUser = "Rose" # Runtime variables for development, remove before production
 # fromUser = "KK" # Runtime variables for development, remove before production
@@ -16,27 +15,11 @@ app = Flask(__name__)
 app.secret_key='somerandomvalue'
 app.config['UPLOAD_FOLDER'] = 'user-content/'
 
-db = Connection(app, '192.168.12.209', 27017) 
-
-#Importing all models
-image_model = torch.load("models/model_nsfw.pt",map_location=torch.device('cpu'))
-
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  
-text_model = BERT().to(device)
-
-def load_checkpoint(load_path, model):
-    
-    if load_path==None:
-        return
-    
-    state_dict = torch.load(load_path, map_location=device)
-    print(f'Model loaded from <== {load_path}')
-    
-    model.load_state_dict(state_dict['model_state_dict'])
-    return state_dict['valid_loss']
-
-load_checkpoint('models/model_initial_text.pt', text_model)
-
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
+db_host = os.getenv('MONGO_HOST', 'localhost')
+db_port = int(os.getenv('MONGO_PORT', 27017))
+app.config['REPORTING_PLATFORM_URL'] = os.getenv('REPORTING_PLATFORM_URL', 'http://localhost:3003')
+db = Connection(app, db_host, db_port) 
 # Generate color for a username
 def string_to_color(string):
     colors = ['#FF007F', '#9BC63B', '#0D8ABC',
@@ -134,6 +117,10 @@ def message_chat():
 
 
 # Route for the login page
+@app.route('/login', methods=['GET'])
+def login_get():
+    return redirect(url_for('login'))
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     error = None 
@@ -148,6 +135,21 @@ def login():
             # fromUser = session['username'].lower()
             return redirect(url_for('feed_home'))
     return render_template("login.html", error=error)
+
+
+# Route for the register page
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    error = None 
+    if request.method == 'POST':
+        try:
+            db.create_user(request.form['fullname'], request.form['username'].lower(), request.form['password'])
+            session['exists'] = True
+            session['username'] = request.form['username'].lower()
+            return redirect(url_for('feed_home'))
+        except Exception as e:
+            error = str(e)
+    return render_template("register.html", error=error)
 
 
 # Function to get the post data and make a new post
@@ -187,7 +189,7 @@ def make_post():
                     os.mkdir(directory)
                 file_path = directory+"/"+file_name
                 media.save(file_path)
-                image_prediction = prediction_models.predict_image(image_model,file_path)
+                image_prediction = prediction_models.predict_image(None, file_path)
 
             description = ''
             title = ''
@@ -198,7 +200,7 @@ def make_post():
                 title = og.title
                 image = og.image
 
-            post_content_prediction = prediction_models.predict_text(text_model,content_post,device)
+            post_content_prediction = prediction_models.predict_text(None,content_post,None)
 
             content = {
                 'posttype': post_type,
@@ -275,5 +277,5 @@ if __name__ == '__main__':
         print("Folder created.")
     except FileExistsError:
         print("Folder already exist.")
-    app.run(host='0.0.0.0', port=3000, use_reloader=True, debug=True)  # use_reloader=True, debug=True
+    app.run(host='0.0.0.0', port=3069, use_reloader=True, debug=True)  # use_reloader=True, debug=True
     os.system("clear")

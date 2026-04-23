@@ -12,16 +12,17 @@ class Connection:
     def __init__(self, app, host, port):
         self.app = app
         self.client = pymongo.MongoClient(host, port)
-        self.db = self.client['reporting-app']
+        self.db = self.client['reportingapp']
         self.filed_report = self.db['filed_report']
         self.admin_users = self.db['admin_users']
         self.reports = self.db['reports']
+        self.complaints = self.db['complaints']
 
     # Filed Reports functions
-    def get_filed_report(self, filed_report, max=50):
+    def get_filed_report(self, filed_report_id, limit=50):
         """Retrieves the filed_report from a chatroom."""
         results = self.filed_report.find(
-            {'id': id}, limit=max)  # Get the messages
+            {'id': filed_report_id}, limit=limit)  # Get the messages
         results = results.sort('date', pymongo.ASCENDING) # Sort by date in ascending order so later messages are at the bottom
         return results
 
@@ -81,9 +82,8 @@ class Connection:
         self.reports.insert_one(obj)
         return True 
     
-    def get_indexData(self,id,name):
+    def get_indexData(self, id, name, limit=50):
         results = self.reports.find(
-            {'id': id, 'name': name}, limit=max)  
-        
-        results = results.sort('', pymongo.ASCENDING)
+            {'id': id, 'name': name}, limit=limit)
+        results = results.sort('id', pymongo.ASCENDING)
         return results

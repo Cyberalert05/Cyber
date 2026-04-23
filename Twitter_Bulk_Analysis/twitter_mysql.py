@@ -6,41 +6,32 @@ import json
 import pymysql.cursors
 import geocoder
 import prediction_models
-import torch
-from BERT import BERT
 import text_predict
 from datetime import datetime
+import os
+from dotenv import load_dotenv
 
-ckey=""
-csecret=""
-atoken=""
-asecret=""
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
 
-connection = pymysql.connect(host='192.168.12.207',
+ckey= os.getenv('TWITTER_CONSUMER_KEY', '')
+csecret= os.getenv('TWITTER_CONSUMER_SECRET', '')
+atoken= os.getenv('TWITTER_ACCESS_TOKEN', '')
+asecret= os.getenv('TWITTER_ACCESS_SECRET', '')
+
+db_host = os.getenv('MYSQL_HOST', 'localhost')
+db_user = os.getenv('MYSQL_USER', 'root')
+db_pass = os.getenv('MYSQL_PASSWORD', '0000')
+db_name = os.getenv('MYSQL_DB', 'tweet_monitoring')
+
+connection = pymysql.connect(host=db_host,
                              port=3306,
-                             user='root',
-                             password='0000',
-                             db='tweet_monitoring',
+                             user=db_user,
+                             password=db_pass,
+                             db=db_name,
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
 
-image_model = torch.load("models/model_nsfw.pt",map_location=torch.device('cpu'))
-
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  
-text_model = BERT().to(device)
-
-def load_checkpoint(load_path, model):
-    
-    if load_path==None:
-        return
-    
-    state_dict = torch.load(load_path, map_location=device)
-    print(f'Model loaded from <== {load_path}')
-    
-    model.load_state_dict(state_dict['model_state_dict'])
-    return state_dict['valid_loss']
-
-load_checkpoint('models/model_initial_text.pt', text_model)
+# Models are loaded in text_predict and prediction_models.
 
 
 class listener(StreamListener):
@@ -84,12 +75,13 @@ class listener(StreamListener):
 
                 #Predicting toxicity for a post with image and text
                 post_content_prediction = text_predict.predict_string(tweet_text)
-                post_content_prediction = max(post_content_prediction)
+                # predict_string returns a scalar score — no need for max()
+                text_toxicity = post_content_prediction
                 image_prediction = ''
                 if(tweet_type=="image"):
-                    image_prediction = prediction_models.predict_image(image_model,media_url)
-                text_toxicity = post_content_prediction
+                    image_prediction = prediction_models.predict_image(None, media_url)
                 image_class = image_prediction
+
                 try:
                     with connection.cursor() as cursor:
                         sql = "INSERT INTO `tweets` VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"

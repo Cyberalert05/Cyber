@@ -24,6 +24,205 @@
             .blur_img{
                 filter: blur(0.7rem);
             }
+            /* Toxic content blurring */
+            .toxic-blur {
+                filter: blur(6px);
+                transition: filter 0.3s ease;
+                cursor: pointer;
+                position: relative;
+            }
+            .toxic-blur:hover {
+                filter: blur(2px);
+            }
+            .toxic-blur.revealed {
+                filter: none;
+            }
+            /* Toxic warning badge */
+            .toxic-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                background: linear-gradient(135deg, #ff416c, #ff4b2b);
+                color: #fff;
+                font-size: 10px;
+                font-weight: 700;
+                padding: 2px 8px;
+                border-radius: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                animation: pulse-badge 2s infinite;
+            }
+            .toxic-badge.warning {
+                background: linear-gradient(135deg, #f7971e, #ffd200);
+                color: #333;
+            }
+            .toxic-badge.safe {
+                background: linear-gradient(135deg, #11998e, #38ef7d);
+            }
+            @keyframes pulse-badge {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.7; }
+            }
+            /* Report Modal Styles */
+            .report-modal-overlay {
+                display: none;
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0,0,0,0.6);
+                backdrop-filter: blur(4px);
+                z-index: 100000;
+                justify-content: center;
+                align-items: center;
+                animation: fadeIn 0.2s ease;
+            }
+            .report-modal-overlay.is-active {
+                display: flex;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            .report-modal {
+                background: #fff;
+                border-radius: 16px;
+                width: 520px;
+                max-width: 95vw;
+                max-height: 90vh;
+                overflow-y: auto;
+                box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+                animation: slideUp 0.3s ease;
+            }
+            @keyframes slideUp {
+                from { transform: translateY(30px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+            .report-modal-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 20px 24px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            .report-modal-header h3 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 700;
+                color: #1a1a2e;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .report-modal-header .close-report-modal {
+                cursor: pointer;
+                width: 32px; height: 32px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #f5f5f5;
+                transition: background 0.2s;
+                border: none;
+            }
+            .report-modal-header .close-report-modal:hover {
+                background: #e0e0e0;
+            }
+            .report-modal-body {
+                padding: 24px;
+            }
+            .report-modal-body .post-preview {
+                background: #f8f9fa;
+                border-radius: 12px;
+                padding: 16px;
+                margin-bottom: 20px;
+                border-left: 4px solid #ff416c;
+            }
+            .report-modal-body .post-preview .preview-label {
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: #999;
+                margin-bottom: 8px;
+            }
+            .report-modal-body .post-preview .preview-content {
+                font-size: 14px;
+                color: #333;
+                line-height: 1.5;
+                word-break: break-word;
+            }
+            .report-modal-body .post-preview .preview-meta {
+                margin-top: 8px;
+                font-size: 12px;
+                color: #888;
+            }
+            .report-form-group {
+                margin-bottom: 16px;
+            }
+            .report-form-group label {
+                display: block;
+                font-size: 13px;
+                font-weight: 600;
+                color: #555;
+                margin-bottom: 6px;
+            }
+            .report-form-group select,
+            .report-form-group input,
+            .report-form-group textarea {
+                width: 100%;
+                padding: 10px 14px;
+                border: 1.5px solid #e0e0e0;
+                border-radius: 10px;
+                font-size: 14px;
+                transition: border-color 0.2s, box-shadow 0.2s;
+                outline: none;
+                font-family: inherit;
+            }
+            .report-form-group select:focus,
+            .report-form-group input:focus,
+            .report-form-group textarea:focus {
+                border-color: #5b5ea6;
+                box-shadow: 0 0 0 3px rgba(91,94,166,0.1);
+            }
+            .report-form-group textarea {
+                resize: vertical;
+                min-height: 80px;
+            }
+            .report-modal-footer {
+                padding: 16px 24px;
+                border-top: 1px solid #f0f0f0;
+                display: flex;
+                justify-content: flex-end;
+                gap: 12px;
+            }
+            .report-modal-footer button {
+                padding: 10px 24px;
+                border-radius: 10px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+                border: none;
+            }
+            .btn-cancel-report {
+                background: #f5f5f5;
+                color: #666;
+            }
+            .btn-cancel-report:hover {
+                background: #e8e8e8;
+            }
+            .btn-submit-report {
+                background: linear-gradient(135deg, #5b5ea6, #9b59b6);
+                color: #fff;
+            }
+            .btn-submit-report:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(91,94,166,0.4);
+            }
+            .btn-submit-report:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
         </style>
     </head>
     <body>
@@ -568,6 +767,211 @@
                 }
             }
         </script>
+
+        <!-- ==================== CODAR REPORT MODAL ==================== -->
+        <div id="report-modal-overlay" class="report-modal-overlay">
+            <div class="report-modal">
+                <div class="report-modal-header">
+                    <h3>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff416c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                        Report Content to CODAR
+                    </h3>
+                    <button class="close-report-modal" id="close-report-modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div class="report-modal-body">
+                    <div class="post-preview">
+                        <div class="preview-label">Flagged Content</div>
+                        <div class="preview-content" id="report-preview-content">—</div>
+                        <div class="preview-meta">
+                            Post ID: <strong id="report-preview-id">—</strong> | 
+                            Author: <strong id="report-preview-author">—</strong> |
+                            NLP: <span id="report-preview-prediction" class="toxic-badge">—</span>
+                        </div>
+                    </div>
+                    <form id="report-form">
+                        <input type="hidden" id="report-post-id" name="viraly_post_id" value="">
+                        <input type="hidden" name="platform" value="viraly">
+                        <input type="hidden" id="report-content-type" name="viraly_content-type" value="post">
+                        <div class="report-form-group">
+                            <label for="report-crime-type">Reason for Reporting</label>
+                            <select id="report-crime-type" name="crime_type">
+                                <option value="Harrasment" selected>Harassment & Cyberstalking</option>
+                                <option value="Impersonation">Impersonation</option>
+                                <option value="NSFW">Inappropriate Photographs/Videos</option>
+                                <option value="Masquerading">Masquerading / Catfishing</option>
+                                <option value="Hate Speech">Hate Speech / Identity Attack</option>
+                                <option value="Threat">Threats / Intimidation</option>
+                            </select>
+                        </div>
+                        <div class="report-form-group">
+                            <label for="report-victim-name">Your Full Name</label>
+                            <input type="text" id="report-victim-name" name="full_name" placeholder="Enter your full name" value="{{ fullname }}" required>
+                        </div>
+                        <div class="report-form-group">
+                            <label for="report-victim-email">Your Email</label>
+                            <input type="email" id="report-victim-email" name="email" placeholder="you@example.com" required>
+                        </div>
+                        <div class="report-form-group">
+                            <label for="report-additional">Additional Details (Optional)</label>
+                            <textarea id="report-additional" name="additional_details" placeholder="Describe the situation..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="report-modal-footer">
+                    <button type="button" class="btn-cancel-report" id="cancel-report-btn">Cancel</button>
+                    <button type="button" class="btn-submit-report" id="submit-report-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:middle"><path d="M22 2L11 13"></path><path d="M22 2L15 22L11 13L2 9L22 2Z"></path></svg>
+                        Submit Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CODAR Flag & Reporting Logic -->
+        <script>
+        (function() {
+            'use strict';
+
+            var REPORTING_URL = '{{ config.get("REPORTING_PLATFORM_URL", "http://localhost:3003") }}';
+            var overlay = document.getElementById('report-modal-overlay');
+            var closeBtn = document.getElementById('close-report-modal');
+            var cancelBtn = document.getElementById('cancel-report-btn');
+            var submitBtn = document.getElementById('submit-report-btn');
+
+            // Close modal
+            function closeModal() {
+                overlay.classList.remove('is-active');
+            }
+            if (closeBtn) closeBtn.addEventListener('click', closeModal);
+            if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) closeModal();
+            });
+
+            // Open modal with post data
+            function openReportModal(postId, postContent, postAuthor, postPrediction) {
+                document.getElementById('report-preview-content').textContent = postContent || '—';
+                document.getElementById('report-preview-id').textContent = postId || '—';
+                document.getElementById('report-preview-author').textContent = postAuthor || '—';
+                var predBadge = document.getElementById('report-preview-prediction');
+                predBadge.textContent = postPrediction || '—';
+                predBadge.className = 'toxic-badge';
+                if (postPrediction && postPrediction.toLowerCase().indexOf('toxic') !== -1) {
+                    // default red style — no extra class needed
+                } else if (postPrediction && postPrediction.toLowerCase().indexOf('violate') !== -1) {
+                    predBadge.classList.add('safe');
+                } else {
+                    predBadge.classList.add('warning');
+                }
+                document.getElementById('report-post-id').value = postId;
+                overlay.classList.add('is-active');
+            }
+
+            // Delegate click on any flag button (dropdown flag or floating flag)
+            document.addEventListener('click', function(e) {
+                var flagEl = e.target.closest('.flag-post');
+                if (!flagEl) return;
+                e.preventDefault();
+                e.stopPropagation();
+                var card = flagEl.closest('.card.is-post');
+                if (!card) return;
+                var postId = card.getAttribute('data-post-id') || '—';
+                var postContent = card.getAttribute('data-post-content') || '—';
+                var postAuthor = card.getAttribute('data-post-author') || '—';
+                var postPrediction = card.getAttribute('data-post-prediction') || '—';
+                openReportModal(postId, postContent, postAuthor, postPrediction);
+            });
+
+            // Toggle toxic blur on click
+            document.addEventListener('click', function(e) {
+                var blurEl = e.target.closest('.toxic-blur');
+                if (blurEl && !e.target.closest('.flag-post')) {
+                    blurEl.classList.toggle('revealed');
+                }
+            });
+
+            // Submit report
+            if (submitBtn) {
+                submitBtn.addEventListener('click', function() {
+                    var form = document.getElementById('report-form');
+                    var formData = new FormData(form);
+                    // Add defaults for fields the Reporting Platform expects
+                    if (!formData.get('username')) formData.append('username', '{{ fromUser }}');
+                    if (!formData.get('dob')) formData.append('dob', '');
+                    if (!formData.get('address')) formData.append('address', '');
+                    if (!formData.get('state')) formData.append('state', '');
+                    if (!formData.get('city')) formData.append('city', '');
+                    if (!formData.get('pincode')) formData.append('pincode', '');
+
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px"><svg class="spin" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line></svg> Submitting...</span>';
+
+                    // Submit to the Reporting Platform
+                    fetch(REPORTING_URL + '/push', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(function(response) {
+                        if (response.ok || response.redirected) {
+                            closeModal();
+                            if (typeof iziToast !== 'undefined') {
+                                iziToast.show({
+                                    class: 'toast',
+                                    icon: 'mdi mdi-check-circle',
+                                    title: 'Report Submitted!',
+                                    message: 'Your report has been sent to the CODAR Reporting Authority.',
+                                    titleColor: '#fff',
+                                    messageColor: '#fff',
+                                    iconColor: '#fff',
+                                    backgroundColor: '#11998e',
+                                    progressBarColor: '#38ef7d',
+                                    position: 'topRight',
+                                    transitionIn: 'fadeInDown',
+                                    close: false,
+                                    timeout: 4000,
+                                    zindex: 200000
+                                });
+                            } else {
+                                alert('Report submitted successfully!');
+                            }
+                        } else {
+                            throw new Error('Server returned ' + response.status);
+                        }
+                    })
+                    .catch(function(err) {
+                        console.error('Report submission error:', err);
+                        if (typeof iziToast !== 'undefined') {
+                            iziToast.show({
+                                class: 'toast',
+                                icon: 'mdi mdi-alert-circle',
+                                title: 'Submission Failed',
+                                message: 'Could not reach the Reporting Platform. Is it running on port 3003?',
+                                titleColor: '#fff',
+                                messageColor: '#fff',
+                                iconColor: '#fff',
+                                backgroundColor: '#ff533d',
+                                progressBarColor: '#fff',
+                                position: 'topRight',
+                                transitionIn: 'fadeInDown',
+                                close: false,
+                                timeout: 5000,
+                                zindex: 200000
+                            });
+                        } else {
+                            alert('Failed to submit report. Is the Reporting Platform running?');
+                        }
+                    })
+                    .finally(function() {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:middle"><path d="M22 2L11 13"></path><path d="M22 2L15 22L11 13L2 9L22 2Z"></path></svg>Submit Report';
+                    });
+                });
+            }
+        })();
+        </script>
     </body>
 
 </html>
+

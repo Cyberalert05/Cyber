@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODAR Forensic Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.2.96/css/materialdesignicons.min.css">
+    <style>
+        :root {
+            --bg-base: #050508;
+            --bg-surface: #0a0b10;
+            --bg-panel: #11131a;
+            --bg-glass: rgba(17, 19, 26, 0.7);
+            --primary: #00e5ff;
+            --primary-glow: rgba(0, 229, 255, 0.3);
+            --danger: #ff2a5f;
+            --danger-glow: rgba(255, 42, 95, 0.3);
+            --warning: #ffb020;
+            --success: #00d27a;
+            --text-main: #f0f2f5;
+            --text-muted: #8b92a5;
+            --border: rgba(255,255,255,0.08);
+            --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 229, 255, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(255, 42, 95, 0.05), transparent 25%);
+        }
+
+        /* Navbar */
+        header {
+            height: 70px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), #0077ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .dashboard-container {
+            flex: 1;
+            padding: 40px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .header-section {
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #fff, #a0aabf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .stat-card.total::before { background: var(--primary); }
+        .stat-card.pending::before { background: var(--warning); }
+        .stat-card.resolved::before { background: var(--success); }
+        .stat-card.danger::before { background: var(--danger); }
+
+        .stat-title {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stat-value {
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .filter-btn {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+        }
+
+        .filter-btn.active {
+            background: var(--primary-glow);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Table */
+        .table-container {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 18px 24px;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(0,0,0,0.2);
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-size: 15px;
+            vertical-align: middle;
+        }
+
+        tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .id-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.05);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .platform-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+        }
+
+        .platform-badge.viraly { background: rgba(0, 119, 255, 0.15); color: #4da3ff; }
+        .platform-badge.twitter { background: rgba(29, 161, 242, 0.15); color: #1da1f2; }
+        .platform-badge.youtube { background: rgba(255, 0, 0, 0.15); color: #ff4444; }
+        .platform-badge.instagram { background: rgba(225, 48, 108, 0.15); color: #e1306c; }
+        .platform-badge.whatsapp { background: rgba(37, 211, 102, 0.15); color: #25d366; }
+        .platform-badge.facebook { background: rgba(24, 119, 242, 0.15); color: #1877f2; }
+        .platform-badge.extension { background: rgba(0, 229, 255, 0.15); color: #00e5ff; }
+        .platform-badge.generic { background: rgba(102, 126, 234, 0.15); color: #667eea; }
+
+        .crime-type {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .content-preview {
+            color: var(--text-muted);
+            font-size: 14px;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-badge.pending { background: rgba(255, 176, 32, 0.15); color: var(--warning); }
+        .status-badge.resolved { background: rgba(0, 210, 122, 0.15); color: var(--success); }
+        .status-badge.dismissed { background: rgba(139, 146, 165, 0.15); color: var(--text-muted); }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            color: #fff;
+        }
+
+        .action-btn.resolve:hover { background: var(--success); color: #000; }
+        .action-btn.dismiss:hover { background: var(--text-muted); color: #fff; }
+        .action-btn.view:hover { background: var(--primary); color: #000; }
+
+        /* Detail Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 24px;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #fff;
+        }
+
+        .modal-body {
+            padding: 32px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .detail-item {
+            background: var(--bg-panel);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .content-box {
+            background: rgba(255, 42, 95, 0.05);
+            border: 1px solid rgba(255, 42, 95, 0.2);
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+        }
+
+        .content-box p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #fff;
+        }
+
+        .modal-footer {
+            padding: 24px 32px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: #fff;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 25px var(--primary-glow);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #000;
+        }
+
+        .btn-success:hover {
+            filter: brightness(1.1);
+        }
+
+        /* Empty State */
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <div class="logo-icon"><i class="mdi mdi-shield-check"></i></div>
+            CODAR <span style="font-weight:400;color:var(--text-muted)">Forensics</span>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="nav-link"><i class="mdi mdi-home"></i> Home</a>
+            <a href="/dashboard" class="nav-link active"><i class="mdi mdi-view-dashboard"></i> Dashboard</a>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <div class="header-section">
+            <h1 class="page-title">Command Center</h1>
+            <p class="page-subtitle">Real-time threat monitoring and forensic analysis across all connected platforms.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card total">
+                <div class="stat-title">Total Reports <i class="mdi mdi-chart-box-outline"></i></div>
+                <div class="stat-value">{{ stats.total }}</div>
+            </div>
+            <div class="stat-card pending">
+                <div class="stat-title">Action Required <i class="mdi mdi-alert-circle-outline"></i></div>
+                <div class="stat-value" style="color: var(--warning)">{{ stats.pending }}</div>
+            </div>
+            <div class="stat-card resolved">
+                <div class="stat-title">Resolved <i class="mdi mdi-check-circle-outline"></i></div>
+                <div class="stat-value">{{ stats.resolved }}</div>
+            </div>
+            <div class="stat-card danger">
+                <div class="stat-title">Shield AI Detections <i class="mdi mdi-shield-alert"></i></div>
+                <div class="stat-value">{{ stats.platforms.get('browser_extension', 0) + stats.platforms.get('twitter', 0) + stats.platforms.get('youtube', 0) + stats.platforms.get('instagram', 0) + stats.platforms.get('whatsapp', 0) + stats.platforms.get('facebook', 0) + stats.platforms.get('generic', 0) }}</div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All Reports</button>
+            <button class="filter-btn" data-filter="pending">Pending Review</button>
+            <button class="filter-btn" data-filter="resolved">Resolved</button>
+            <button class="filter-btn" data-filter="shield">Shield AI Detections</button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Source</th>
+                        <th>Reporter</th>
+                        <th>Violation Type</th>
+                        <th>Content Snippet</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="complaints-body">
+                    {% if complaints %}
+                        {% for c in complaints %}
+                        <tr class="complaint-row" data-status="{{ c.get('status', 'pending') }}" data-platform="{{ c.get('platform', c.get('type', 'unknown')) }}" data-source="{{ c.get('source', '') }}">
+                            <td><span class="id-badge">{{ (c.get('_id')|string)[-6:] }}</span></td>
+                            <td>
+                                {% set plat = c.get('platform', c.get('type', 'unknown')) %}
+                                {% if plat == 'viraly' %}
+                                    <span class="platform-badge viraly"><i class="mdi mdi-at"></i> Viraly</span>
+                                {% elif plat == 'twitter' %}
+                                    <span class="platform-badge twitter"><i class="mdi mdi-twitter"></i> Twitter/X</span>
+                                {% elif plat == 'youtube' %}
+                                    <span class="platform-badge youtube"><i class="mdi mdi-youtube"></i> YouTube</span>
+                                {% elif plat == 'instagram' %}
+                                    <span class="platform-badge instagram"><i class="mdi mdi-instagram"></i> Instagram</span>
+                                {% elif plat == 'whatsapp' %}
+                                    <span class="platform-badge whatsapp"><i class="mdi mdi-whatsapp"></i> WhatsApp</span>
+                                {% elif plat == 'facebook' %}
+                                    <span class="platform-badge facebook"><i class="mdi mdi-facebook"></i> Facebook</span>
+                                {% elif plat == 'browser_extension' or plat == 'generic' %}
+                                    <span class="platform-badge extension"><i class="mdi mdi-shield-check"></i> Shield AI</span>
+                                {% else %}
+                                    <span class="platform-badge generic"><i class="mdi mdi-web"></i> {{ plat|title }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if c.get('source') == 'codar_shield_extension' or plat in ['browser_extension', 'generic'] %}
+                                    <span style="color:var(--primary);font-size:13px"><i class="mdi mdi-robot"></i> Auto-Detected</span>
+                                {% else %}
+                                    <div style="font-weight:500;color:#fff">{{ c.get('full_name', c.get('victimFullName', c.get('name', 'Anonymous'))) }}</div>
+                                    <div style="font-size:12px;color:var(--text-muted)">{{ c.get('email', c.get('victimEmail', '')) }}</div>
+                                {% endif %}
+                            </td>
+                            <td><span class="crime-type">{{ c.get('crime_type', c.get('reason', 'Toxicity')) }}</span></td>
+                            <td>
+                                {% set content = c.get('content', c.get('post_text', 'No content provided')) %}
+                                <div class="content-preview">{{ content }}</div>
+                            </td>
+                            <td style="color:var(--text-muted);font-size:13px">{{ c.get('date', c.get('timestamp', 'Unknown Date')) }}</td>
+                            <td>
+                                {% set status = c.get('status', 'pending') %}
+                                <span class="status-badge {{ status }}" id="badge-{{ c.get('_id') }}">
+                                    {% if status == 'pending' %}<i class="mdi mdi-clock-outline"></i> Pending
+                                    {% elif status == 'resolved' %}<i class="mdi mdi-check"></i> Resolved
+                                    {% else %}<i class="mdi mdi-close"></i> Dismissed{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="action-btn view" title="View Details" onclick="viewDetails('{{ c.get('_id') }}')">
+                                        <i class="mdi mdi-eye"></i>
+                                    </button>
+                                    {% if status == 'pending' %}
+                                    <button class="action-btn resolve" title="Mark Resolved" onclick="updateStatus('{{ c.get('_id') }}', 'resolved')" id="btn-resolve-{{ c.get('_id') }}">
+                                        <i class="mdi mdi-check"></i>
+                                    </button>
+                                    <button class="action-btn dismiss" title="Dismiss" onclick="updateStatus('{{ c.get('_id') }}', 'dismissed')" id="btn-dismiss-{{ c.get('_id') }}">
+                                        <i class="mdi mdi-close"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Hidden data store for modal -->
+                        <script>
+                            window.complaintsData = window.complaintsData || {};
+                            window.complaintsData["{{ c.get('_id') }}"] = {{ c | tojson | safe }};
+                        </script>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="8">
+                                <div class="empty-state">
+                                    <i class="mdi mdi-text-box-search-outline"></i>
+                                    <h3>No Reports Found</h3>
+                                    <p>The system is clean. No toxic content has been reported yet.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div class="modal-overlay" id="detail-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Forensic Report Details</div>
+                <button class="modal-close" onclick="closeModal()"><i class="mdi mdi-close"></i></button>
+            </div>
+            <div class="modal-body" id="modal-body-content">
+                <!-- Injected via JS -->
+            </div>
+            <div class="modal-footer" id="modal-footer-actions">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filtering
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const rows = document.querySelectorAll('.complaint-row');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const filter = btn.dataset.filter;
+                const shieldPlatforms = ['twitter','youtube','instagram','whatsapp','facebook','browser_extension','generic'];
+                rows.forEach(row => {
+                    if (filter === 'all') {
+                        row.style.display = '';
+                    } else if (filter === 'shield') {
+                        const src = row.dataset.source || '';
+                        const plat = row.dataset.platform || '';
+                        row.style.display = (src === 'codar_shield_extension' || shieldPlatforms.includes(plat)) ? '' : 'none';
+                    } else {
+                        row.style.display = row.dataset.status === filter ? '' : 'none';
+                    }
+                });
+            });
+        });
+
+        // Update Status
+        function updateStatus(id, status) {
+            fetch('/api/update_complaint', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id, status: status })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Update UI locally without reload
+                    const badge = document.getElementById(`badge-${id}`);
+                    const row = badge.closest('tr');
+                    
+                    row.dataset.status = status;
+                    
+                    if (status === 'resolved') {
+                        badge.className = 'status-badge resolved';
+                        badge.innerHTML = '<i class="mdi mdi-check"></i> Resolved';
+                    } else {
+                        badge.className = 'status-badge dismissed';
+                        badge.innerHTML = '<i class="mdi mdi-close"></i> Dismissed';
+                    }
+                    
+                    // Hide action buttons
+                    const resolveBtn = document.getElementById(`btn-resolve-${id}`);
+                    const dismissBtn = document.getElementById(`btn-dismiss-${id}`);
+                    if(resolveBtn) resolveBtn.style.display = 'none';
+                    if(dismissBtn) dismissBtn.style.display = 'none';
+                    
+                    // Close modal if open
+                    closeModal();
+                } else {
+                    alert('Failed to update status: ' + data.error);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Network error while updating status.');
+            });
+        }
+
+        // Modal Logic
+        const modal = document.getElementById('detail-modal');
+        const modalBody = document.getElementById('modal-body-content');
+        const modalFooter = document.getElementById('modal-footer-actions');
+
+        function viewDetails(id) {
+            const data = window.complaintsData[id];
+            if(!data) return;
+
+            const plat = data.platform || data.type || 'unknown';
+            const content = data.content || data.post_text || 'No content provided';
+            const isExtension = data.source === 'codar_shield_extension' || ['browser_extension','generic'].includes(plat);
+
+            let detailsHtml = `
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Report ID</div>
+                        <div class="detail-value" style="font-family: monospace">${id}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Source Platform</div>
+                        <div class="detail-value" style="text-transform: capitalize">${data.platform_name || plat}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Violation Type</div>
+                        <div class="detail-value">${data.crime_type || data.reason || 'Toxicity'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Date Detected</div>
+                        <div class="detail-value">${data.date || data.timestamp || 'Unknown'}</div>
+                    </div>
+            `;
+
+            if (isExtension || data.source === 'codar_shield_extension') {
+                const pageUrl = data.page_url || '';
+                const score = data.toxicity_score || 0;
+                const keyword = data.matched_keyword || 'N/A';
+                detailsHtml += `
+                    <div class="detail-item">
+                        <div class="detail-label">Page URL</div>
+                        <div class="detail-value"><a href="${pageUrl}" target="_blank" style="color:var(--primary)">${pageUrl.substring(0, 50)}${pageUrl.length > 50 ? '...' : ''}</a></div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Toxicity Score</div>
+                        <div class="detail-value" style="color:var(--danger)">${(score * 100).toFixed(1)}% Confidence</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Matched Keyword</div>
+                        <div class="detail-value" style="color:var(--warning);font-family:monospace">${keyword}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Detection Source</div>
+                        <div class="detail-value" style="color:var(--primary)">CODAR Shield AI v2.1</div>
+                    </div>
+                `;
+            } else {
+                detailsHtml += `
+                    <div class="detail-item">
+                        <div class="detail-label">Reporter Name</div>
+                        <div class="detail-value">${data.full_name || data.name || 'Anonymous'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Reporter Email</div>
+                        <div class="detail-value">${data.email || 'N/A'}</div>
+                    </div>
+                `;
+            }
+
+            detailsHtml += `</div>
+                <div class="detail-label" style="margin-bottom: 12px">Flagged Content Snippet</div>
+                <div class="content-box">
+                    <p>${content}</p>
+                </div>
+            `;
+
+            if(data.additional_details && data.additional_details.trim() !== '') {
+                detailsHtml += `
+                    <div class="detail-label" style="margin-bottom: 12px">User Comments / Context</div>
+                    <div class="detail-item" style="margin-bottom: 24px">
+                        ${data.additional_details}
+                    </div>
+                `;
+            }
+
+            modalBody.innerHTML = detailsHtml;
+
+            let footerHtml = `<button class="btn btn-outline" onclick="closeModal()">Close</button>`;
+            
+            if ((data.status || 'pending') === 'pending') {
+                footerHtml += `
+                    <button class="btn btn-outline" onclick="updateStatus('${id}', 'dismissed')">Dismiss Report</button>
+                    <button class="btn btn-primary" onclick="updateStatus('${id}', 'resolved')">Mark as Resolved</button>
+                `;
+            }
+
+            modalFooter.innerHTML = footerHtml;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // Close on click outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+    </script>
+</body>
+</html>

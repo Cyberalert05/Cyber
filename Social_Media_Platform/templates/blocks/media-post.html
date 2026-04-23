@@ -1,4 +1,5 @@
-<div class="card is-post">
+{% set is_toxic = post.content.text_prediction and ('toxic' in post.content.text_prediction|lower or 'blocked' in post.content.text_prediction|lower) %}
+<div class="card is-post" data-post-id="{{ post.id }}" data-post-content="{{ post.content.postcontent }}" data-post-author="{{ post.username }}" data-post-prediction="{{ post.content.text_prediction }}">
     <!-- Main wrap -->
     <div class="content-wrap">
         <!-- Header -->
@@ -13,7 +14,13 @@
                 </div>
                 <div class="user-info">
                     <a href="#">{{post.fullname}}</a>
-                    <span class="time">{{post.date.strftime('%b %d %Y, %I:%M%p')}} | Id: {{post.id}} </span>
+                    <span class="time">{{post.date.strftime('%b %d %Y, %I:%M%p')}} | Id: {{post.id}} |
+                        {% if is_toxic %}
+                            <span class="toxic-badge">⚠ {{ post.content.text_prediction }}</span>
+                        {% else %}
+                            <span class="toxic-badge safe">✓ {{ post.content.text_prediction }}</span>
+                        {% endif %}
+                    </span>
                 </div>
             </div>
             <!-- /partials/pages/feed/dropdowns/feed-post-dropdown.html -->
@@ -25,12 +32,12 @@
                 </div>
                 <div class="dropdown-menu" role="menu">
                     <div class="dropdown-content">
-                        <a href="#" class="dropdown-item">
+                        <a href="#" class="dropdown-item flag-post">
                             <div class="media">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
                                 <div class="media-content">
-                                    <h3>Flag</h3>
-                                    <small>In case of inappropriate content.</small>
+                                    <h3>Flag & Report</h3>
+                                    <small>Report to CODAR Authority</small>
                                 </div>
                             </div>
                         </a>
@@ -42,10 +49,18 @@
         <!-- Post body -->
         <div class="card-body">
             <!-- Post body text -->
-            <div class="post-text">
-                <p>{{post.content.postcontent}}
-                    </p><p>
-            </p></div>
+            <div class="post-text {% if is_toxic %}toxic-blur{% endif %}">
+                <p>{{post.content.postcontent}}</p>
+            </div>
+            {% if is_toxic %}
+            <div style="text-align:center;margin:8px 0;display:flex;align-items:center;justify-content:center;gap:12px;">
+                <small style="color:#ff416c;font-size:11px;">⚠ Blurred by CODAR NLP. Click text to reveal.</small>
+                <a href="javascript:void(0);" class="flag-post" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ff416c,#ff4b2b);color:#fff;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 8px rgba(255,65,108,0.3);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                    Report This
+                </a>
+            </div>
+            {% endif %}
             {% if post.content.image_prediction=="porn" or post.content.image_prediction=="hentai" or post.content.image_prediction=="sexy" %}
                 {% set blur="blur_img" %}
                 {% set ub="unblur("+post.id|string+")" %}
@@ -54,14 +69,11 @@
             <!-- Featured image -->
             <div class="post-image">
                 <a data-fancybox="post2" data-lightbox-type="comments" data-thumb="{{post.content.medialink}}" href="{{post.content.medialink}}" data-demo-href="{{post.content.medialink}}" >
-                    <img src="{{post.content.medialink}}" data-demo-src="{{post.content.medialink}} alt="" id="{{post.id}}" {{click}} class={{blur}}>
+                    <img src="{{post.content.medialink}}" data-demo-src="{{post.content.medialink}}" alt="" id="{{post.id}}" {{click}} class="{{blur}}">
                 </a>
                 <!-- Post actions -->
-                <!-- /partials/pages/feed/buttons/feed-post-actions.html -->
-                
-
                 <div class="fab-wrapper is-share">
-                    <a href="javascript:void(0);" class="small-fab share-fab modal-trigger">
+                    <a href="javascript:void(0);" class="small-fab share-fab flag-post" title="Flag this post">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
                     </a>
                 </div>
@@ -82,29 +94,12 @@
 
         <!-- Post footer -->
         <div class="card-footer">
-            <!-- Followers -->
-            <!-- <div class="likers-group">
-                <img src="static/assets/img/avatars/placeholder.png" data-demo-src="static/assets/img/avatars/gaelle.jpeg" data-user-popover="11" alt="">
-                <img src="static/assets/img/avatars/placeholder.png" data-demo-src="static/assets/img/avatars/edward.jpeg" data-user-popover="5" alt="">
-                <img src="static/assets/img/avatars/placeholder.png"  data-user-popover="9" alt="">
-            </div>
-            <div class="likers-text">
-                <p>
-                    <a href="#">Gaelle</a>,
-                    <a href="#">Edward</a>
-                </p>
-                <p>and 1 more liked this</p>
-            </div> -->
             <!-- Post statistics -->
             <div class="social-count">
                 <div class="likes-count">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                     <span id="like_{{post.id}}">{{post.likes}}</span>
                 </div>
-                <!-- <div class="shares-count">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link-2"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                    <span>0</span>
-                </div> -->
                 <div class="comments-count">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-circle"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
                     <span>{{post.comments}}</span>

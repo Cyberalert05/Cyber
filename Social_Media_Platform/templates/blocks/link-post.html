@@ -1,4 +1,5 @@
-<div class="card is-post">
+{% set is_toxic = post.content.text_prediction and ('toxic' in post.content.text_prediction|lower or 'blocked' in post.content.text_prediction|lower) %}
+<div class="card is-post" data-post-id="{{ post.id }}" data-post-content="{{ post.content.postcontent }}" data-post-author="{{ post.username }}" data-post-prediction="{{ post.content.text_prediction }}">
     <!-- Main wrap -->
     <div class="content-wrap">
         <!-- Header -->
@@ -14,11 +15,16 @@
                 </div>
                 <div class="user-info">
                     <a href="#">{{post.fullname}}</a>
-                    <span class="time">{{post.date.strftime('%b %d %Y, %I:%M%p')}} | Id: {{post.id}} | {{post.content.text_prediction}} </span>
+                    <span class="time">{{post.date.strftime('%b %d %Y, %I:%M%p')}} | Id: {{post.id}} |
+                        {% if is_toxic %}
+                            <span class="toxic-badge">⚠ {{ post.content.text_prediction }}</span>
+                        {% else %}
+                            <span class="toxic-badge safe">✓ {{ post.content.text_prediction }}</span>
+                        {% endif %}
+                    </span>
                 </div>
             </div>
             <!-- Right side dropdown -->
-            <!-- /partials/pages/feed/dropdowns/feed-post-dropdown.html -->
             <div class="dropdown is-spaced is-right is-neutral dropdown-trigger">
                 <div>
                     <div class="button">
@@ -27,12 +33,12 @@
                 </div>
                 <div class="dropdown-menu" role="menu">
                     <div class="dropdown-content">
-                        <a href="#" class="dropdown-item">
+                        <a href="#" class="dropdown-item flag-post">
                             <div class="media">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
                                 <div class="media-content">
-                                    <h3>Flag</h3>
-                                    <small>In case of inappropriate content.</small>
+                                    <h3>Flag & Report</h3>
+                                    <small>Report to CODAR Authority</small>
                                 </div>
                             </div>
                         </a>
@@ -44,9 +50,18 @@
         <!-- Post body -->
         <div class="card-body">
             <!-- Post body text -->
-            <div class="post-text">
+            <div class="post-text {% if is_toxic %}toxic-blur{% endif %}">
                 <p>{{post.content.postcontent}}</p>
             </div>
+            {% if is_toxic %}
+            <div style="text-align:center;margin:8px 0;display:flex;align-items:center;justify-content:center;gap:12px;">
+                <small style="color:#ff416c;font-size:11px;">⚠ Blurred by CODAR NLP. Click text to reveal.</small>
+                <a href="javascript:void(0);" class="flag-post" style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ff416c,#ff4b2b);color:#fff;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 8px rgba(255,65,108,0.3);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                    Report This
+                </a>
+            </div>
+            {% endif %}
             <!-- Featured link -->
             <div class="post-link">
                 <!-- link image -->
@@ -62,7 +77,6 @@
                     <small>{{post.content.postlink}}</small>
                 </div>
                 <!-- Post actions -->
-                <!-- /partials/pages/feed/buttons/feed-post-actions.html -->
                 <div class="like-wrapper">
                     <a onclick="send_message({{post.id}})" href="javascript:void(0);" class="like-button" id="button_{{post.id}}">
                         <i class="mdi mdi-heart not-liked bouncy"></i>
@@ -72,7 +86,7 @@
                 </div>
 
                 <div class="fab-wrapper is-share">
-                    <a href="javascript:void(0);" class="small-fab share-fab modal-trigger">
+                    <a href="javascript:void(0);" class="small-fab share-fab flag-post" title="Flag this post">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
                     </a>
                 </div>
