@@ -108,12 +108,46 @@ article .codar-shield-wrap {
     display: inline !important;
 }
 
+/* ===================== VIDEO BLUR ===================== */
+.codar-video-blur {
+    position: relative !important;
+    overflow: hidden !important;
+    min-height: 100px !important;
+}
+
+.codar-video-blur::before {
+    content: "🛡️ CODAR Shield: Video blurred due to toxic content detection. Click to reveal." !important;
+    position: absolute !important;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 12, 41, 0.9) !important;
+    backdrop-filter: blur(25px) !important;
+    color: #fff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 1000 !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    padding: 30px !important;
+    cursor: pointer !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    border: 2px dashed rgba(255, 65, 108, 0.5) !important;
+}
+
+.codar-video-blur.codar-revealed::before {
+    display: none !important;
+}
+
 /* ===================== ANIMATION ===================== */
 @keyframes codar-fade-in {
     from {
+        opacity: 0.5;
         outline-color: transparent;
     }
     to {
+        opacity: 1;
         outline-color: rgba(255, 65, 108, 0.6);
     }
 }
