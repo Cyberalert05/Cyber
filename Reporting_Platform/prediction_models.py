@@ -8,21 +8,8 @@ def predict_image(model, test_image_name):
     return 'neutral'
 
 def predict_text(model, sentence, device=None):
-    # Mock text prediction with heuristics
-    text = str(sentence).lower()
-    toxic_words = ['hate', 'kill', 'murder', 'stupid', 'idiot', 'die', 'fuck', 'shit', 'bitch', 'bad', 'horrific', 'terrible', 'awful', 'disgusting']
-    
-    score = 0
-    for word in toxic_words:
-        if word in text:
-            score += 0.4
-            
-    if score > 0.90:
-        return "highly toxic.Text is blocked"
-    elif score > 0.40:
-        return "toxic"
-    else:
-        return "Text does not violate the guidelines"
+    from text_predict import predict_string
+    return predict_string(sentence)
 
 def predict_chat_toxicity(model, chat_file, device=None):
     # Mock chat toxicity

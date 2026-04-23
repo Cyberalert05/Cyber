@@ -31,6 +31,12 @@ def getWhatsapp():
             "type": i.get("type", ""),
             "reason": i.get("reason", ""),
             "status": i.get("status", "pending"),
+            "toxic": i.get("post_content", {}).get("text_toxicity", {}).get("toxic", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "severe_toxic": i.get("post_content", {}).get("text_toxicity", {}).get("severe_toxic", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "obscene": i.get("post_content", {}).get("text_toxicity", {}).get("obscene", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "threat": i.get("post_content", {}).get("text_toxicity", {}).get("threat", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "insult": i.get("post_content", {}).get("text_toxicity", {}).get("insult", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "identity_hate": i.get("post_content", {}).get("text_toxicity", {}).get("identity_hate", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
             "hscore": i.get("hscore", "0")
         })
     #return jsonify(wapObj)
@@ -52,6 +58,12 @@ def getFb():
             "type": i.get("type", ""),
             "reason": i.get("reason", ""),
             "status": i.get("status", "pending"),
+            "toxic": i.get("post_content", {}).get("text_toxicity", {}).get("toxic", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "severe_toxic": i.get("post_content", {}).get("text_toxicity", {}).get("severe_toxic", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "obscene": i.get("post_content", {}).get("text_toxicity", {}).get("obscene", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "threat": i.get("post_content", {}).get("text_toxicity", {}).get("threat", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "insult": i.get("post_content", {}).get("text_toxicity", {}).get("insult", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "identity_hate": i.get("post_content", {}).get("text_toxicity", {}).get("identity_hate", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
             "hscore": i.get("hscore", "0")
         })
     #return jsonify(fbobj)   
@@ -76,6 +88,12 @@ def getViraly():
             "type": i.get("type", ""),
             "reason": i.get("reason", ""),
             "status": i.get("status", "pending"),
+            "toxic": i.get("post_content", {}).get("text_toxicity", {}).get("toxic", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "severe_toxic": i.get("post_content", {}).get("text_toxicity", {}).get("severe_toxic", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "obscene": i.get("post_content", {}).get("text_toxicity", {}).get("obscene", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "threat": i.get("post_content", {}).get("text_toxicity", {}).get("threat", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "insult": i.get("post_content", {}).get("text_toxicity", {}).get("insult", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "identity_hate": i.get("post_content", {}).get("text_toxicity", {}).get("identity_hate", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
             "hscore": i.get("hscore", "0")
         })
     #return jsonify(viralyObj)
@@ -95,6 +113,12 @@ def getSms():
             "type": i.get("type", ""),
             "reason": i.get("reason", ""),
             "status": i.get("status", "pending"),
+            "toxic": i.get("post_content", {}).get("text_toxicity", {}).get("toxic", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "severe_toxic": i.get("post_content", {}).get("text_toxicity", {}).get("severe_toxic", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "obscene": i.get("post_content", {}).get("text_toxicity", {}).get("obscene", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "threat": i.get("post_content", {}).get("text_toxicity", {}).get("threat", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "insult": i.get("post_content", {}).get("text_toxicity", {}).get("insult", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "identity_hate": i.get("post_content", {}).get("text_toxicity", {}).get("identity_hate", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
             "hscore": i.get("hscore", "0")
         })
     return render_template("sms-table.html",data = smsObj)
@@ -122,6 +146,12 @@ def getTwitter():
             "type": i.get("type", ""),
             "reason": i.get("reason", ""),
             "status": i.get("status", "pending"),
+            "toxic": i.get("post_content", {}).get("text_toxicity", {}).get("toxic", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "severe_toxic": i.get("post_content", {}).get("text_toxicity", {}).get("severe_toxic", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "obscene": i.get("post_content", {}).get("text_toxicity", {}).get("obscene", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "threat": i.get("post_content", {}).get("text_toxicity", {}).get("threat", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "insult": i.get("post_content", {}).get("text_toxicity", {}).get("insult", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "identity_hate": i.get("post_content", {}).get("text_toxicity", {}).get("identity_hate", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
             "hscore": i.get("hscore", "0")
         })
     #return jsonify(twitterobj)
@@ -157,7 +187,12 @@ def preview():
             "status": i.get("status", ""),
             "hscore": i.get("hscore", "0"),
             "post_type": i.get("post_content", {}).get("post_type", "") if isinstance(i.get("post_content"), dict) else "",
-            "text_toxicity": i.get("post_content", {}).get("text_toxicity", "") if isinstance(i.get("post_content"), dict) else "",
+            "toxic": i.get("post_content", {}).get("text_toxicity", {}).get("toxic", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "severe_toxic": i.get("post_content", {}).get("text_toxicity", {}).get("severe_toxic", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "obscene": i.get("post_content", {}).get("text_toxicity", {}).get("obscene", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "threat": i.get("post_content", {}).get("text_toxicity", {}).get("threat", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "insult": i.get("post_content", {}).get("text_toxicity", {}).get("insult", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
+            "identity_hate": i.get("post_content", {}).get("text_toxicity", {}).get("identity_hate", 0) if isinstance(i.get("post_content", {}).get("text_toxicity"), dict) else 0,
             "image_prediction": i.get("post_content", {}).get("image_prediction", [0,0,0,0]) if isinstance(i.get("post_content"), dict) else [0,0,0,0],
             "image_link": i.get("post_content", {}).get("link", "") if isinstance(i.get("post_content"), dict) else "",
             "victimEmail": i.get("victimEmail", "")

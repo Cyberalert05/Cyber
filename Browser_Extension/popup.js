@@ -135,9 +135,9 @@
 
     // ==================== REPORT ====================
     btnReportAll.addEventListener('click', () => {
-        const toxicResults = scanResults.filter(r => r.level === 'toxic');
-        if (toxicResults.length === 0) {
-            showNotification('No toxic content found to report.', 'warning');
+        const reportableResults = scanResults.filter(r => r.level === 'toxic' || r.level === 'warning');
+        if (reportableResults.length === 0) {
+            showNotification('No flagged content found to report. Scan the page first.', 'warning');
             return;
         }
 
@@ -152,13 +152,13 @@
                 platform_name: (PLATFORM_ICONS[detectedPlatform] || PLATFORM_ICONS.generic).label,
                 page_url: pageInfo ? pageInfo.url : 'unknown',
                 page_title: pageInfo ? pageInfo.title : 'unknown',
-                flagged_items: toxicResults.map(r => ({
+                flagged_items: reportableResults.map(r => ({
                     text: r.text,
                     score: r.score,
                     level: r.level,
                     keyword: r.keyword
                 })),
-                total_flagged: toxicResults.length,
+                total_flagged: reportableResults.length,
                 scan_time: new Date().toISOString()
             };
 
@@ -169,14 +169,14 @@
             })
             .then(res => {
                 if (res.ok) {
-                    const reported = parseInt(statReported.textContent) + toxicResults.length;
+                    const reported = parseInt(statReported.textContent) + reportableResults.length;
                     statReported.textContent = reported;
                     chrome.storage.local.get(['codar_stats'], (data) => {
                         const stats = data.codar_stats || {};
                         stats.reported = reported;
                         chrome.storage.local.set({ codar_stats: stats });
                     });
-                    showNotification(`✅ ${toxicResults.length} toxic items reported to CODAR!`, 'success');
+                    showNotification(`✅ ${reportableResults.length} items reported to CODAR Dashboard!`, 'success');
                 } else {
                     throw new Error('Server error');
                 }
@@ -203,9 +203,10 @@
         results.forEach((r) => {
             const item = document.createElement('div');
             item.className = 'result-item ' + r.level;
+            const scorePercent = (r.score * 100).toFixed(0);
             item.innerHTML = `
-                <span class="badge ${r.level}">${r.level}</span>
-                <span class="text">${escapeHtml(r.text.substring(0, 100))}${r.text.length > 100 ? '…' : ''}</span>
+                <span class="badge ${r.level}">${r.level} ${scorePercent}%</span>
+                <span class="text">${escapeHtml(r.text.substring(0, 120))}${r.text.length > 120 ? '…' : ''}</span>
             `;
             resultsList.appendChild(item);
         });

@@ -252,6 +252,14 @@ def extension_report():
     
     complaints_created = 0
     for item in flagged_items:
+        text = item.get('text', '')
+        
+        # Run the text through our actual BERT model
+        text_toxicity_scores = {}
+        if text:
+            import text_predict
+            text_toxicity_scores = text_predict.predict_string(text)
+            
         complaint = {
             'platform': detected_platform,
             'platform_name': platform_name,
@@ -259,14 +267,19 @@ def extension_report():
             'page_url': page_url,
             'page_title': page_title,
             'crime_type': 'Auto-detected toxicity',
-            'content': item.get('text', ''),
-            'matched_keyword': item.get('keyword', ''),
-            'toxicity_level': item.get('level', 'unknown'),
-            'toxicity_score': item.get('score', 0),
             'status': 'pending',
             'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'scan_time': data.get('scan_time', ''),
-            'total_flagged_on_page': data.get('total_flagged', 0)
+            'total_flagged_on_page': data.get('total_flagged', 0),
+            
+            # Map into the expected dashboard structure
+            'type': detected_platform, 
+            'victimName': 'Browser Extension User',
+            'post_content': {
+                'post_text': text,
+                'text_toxicity': text_toxicity_scores,
+                'source': 'extension'
+            }
         }
         db.create_complaint(complaint)
         complaints_created += 1

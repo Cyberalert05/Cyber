@@ -74,7 +74,7 @@
                                         <th>Victim DOB</th>
                                         <th>Reason</th>
                                         <th>Message</th>
-                                        <th>H-Score</th>
+                                        <th>Toxic</th><th>Severe</th><th>Obscene</th><th>Threat</th><th>Insult</th><th>Identity Hate</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -88,7 +88,7 @@
                                         <td>{{d.victimDob}}</td>
                                         <td>{{d.reason}}</td>
                                         <td>{{d.link}}</td>
-                                        <td>{{d.hscore}}</td>
+                                        <td>{{ "%.2f"|format(d.toxic) }}</td><td>{{ "%.2f"|format(d.severe_toxic) }}</td><td>{{ "%.2f"|format(d.obscene) }}</td><td>{{ "%.2f"|format(d.threat) }}</td><td>{{ "%.2f"|format(d.insult) }}</td><td>{{ "%.2f"|format(d.identity_hate) }}</td>
                                         <td>{{d.status}}</td>
                                         <td>
                                             <div><a class="btn btn-danger btn-icon-split" role="button"><span class="text-white-50 icon"><i class="fas fa-ban"></i></span><span class="text-white text">Block&nbsp; &nbsp;&nbsp;</span></a></div>
@@ -105,7 +105,7 @@
                                         <td><strong>Victim DOB</strong></td>
                                         <td><strong>Reason</strong></td>
                                         <td><strong>Post Link</strong></td>
-                                        <td><strong>H-Score</strong></td>
+                                        <td><strong>Toxic</strong></td><td><strong>Severe</strong></td><td><strong>Obscene</strong></td><td><strong>Threat</strong></td><td><strong>Insult</strong></td><td><strong>Identity Hate</strong></td>
                                         <td><strong>Status</strong></td>
                                         <td><strong>Action</strong></td>
                                     </tr>

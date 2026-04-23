@@ -92,7 +92,7 @@
                                                     <p><strong>Victim Address</strong>: {{d.victimAddress}}</p>
                                                 </div>
                                                 <div class="col">
-                                                    <p><strong>H-Score</strong>: {{d.hscore}}</p>
+                                                    <p><strong>Toxic Score</strong>: {{ "%.2f"|format(d.toxic) }}</p>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -116,7 +116,7 @@
                                                     <p><strong>TimeStamp</strong>: {{d.timestamp}}</p>
                                                 </div>
                                                 <div class="col">
-                                                    <p><strong>Text Toxicity</strong>: {{d.text_toxicity}}</p>
+                                                    <p><strong>Severe Toxic</strong>: {{ "%.2f"|format(d.severe_toxic) }}</p>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -143,29 +143,29 @@
                                             <h6 class="text-primary font-weight-bold m-0">Predicted Scores: Text</h6>
                                         </div>
                                         <div class="card-body">
-                                            <h4 class="small font-weight-bold">Severely Toxic<span class="float-right">20%</span></h4>
+                                            <h4 class="small font-weight-bold">Toxic<span class="float-right">{{ "%.1f"|format(d.toxic * 100) }}%</span></h4>
                                             <div class="progress progress-sm mb-3">
-                                                <div class="progress-bar bg-danger" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%;"><span class="sr-only">20%</span></div>
+                                                <div class="progress-bar bg-warning" aria-valuenow="{{ d.toxic * 100 }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ d.toxic * 100 }}%;"><span class="sr-only">{{ d.toxic * 100 }}%</span></div>
                                             </div>
-                                            <h4 class="small font-weight-bold">Toxic<span class="float-right">40%</span></h4>
+                                            <h4 class="small font-weight-bold">Severe Toxic<span class="float-right">{{ "%.1f"|format(d.severe_toxic * 100) }}%</span></h4>
                                             <div class="progress progress-sm mb-3">
-                                                <div class="progress-bar bg-warning" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%;"><span class="sr-only">40%</span></div>
+                                                <div class="progress-bar bg-danger" aria-valuenow="{{ d.severe_toxic * 100 }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ d.severe_toxic * 100 }}%;"><span class="sr-only">{{ d.severe_toxic * 100 }}%</span></div>
                                             </div>
-                                            <h4 class="small font-weight-bold">Sexism<span class="float-right">60%</span></h4>
+                                            <h4 class="small font-weight-bold">Obscene<span class="float-right">{{ "%.1f"|format(d.obscene * 100) }}%</span></h4>
                                             <div class="progress progress-sm mb-3">
-                                                <div class="progress-bar bg-primary" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"><span class="sr-only">60%</span></div>
+                                                <div class="progress-bar bg-primary" aria-valuenow="{{ d.obscene * 100 }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ d.obscene * 100 }}%;"><span class="sr-only">{{ d.obscene * 100 }}%</span></div>
                                             </div>
-                                            <h4 class="small font-weight-bold">Racism<span class="float-right">80%</span></h4>
+                                            <h4 class="small font-weight-bold">Threat<span class="float-right">{{ "%.1f"|format(d.threat * 100) }}%</span></h4>
                                             <div class="progress progress-sm mb-3">
-                                                <div class="progress-bar bg-info" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%;"><span class="sr-only">80%</span></div>
+                                                <div class="progress-bar bg-success" aria-valuenow="{{ d.threat * 100 }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ d.threat * 100 }}%;"><span class="sr-only">{{ d.threat * 100 }}%</span></div>
                                             </div>
-                                            <h4 class="small font-weight-bold">Obscene<span class="float-right">80%</span></h4>
+                                            <h4 class="small font-weight-bold">Insult<span class="float-right">{{ "%.1f"|format(d.insult * 100) }}%</span></h4>
                                             <div class="progress progress-sm mb-3">
-                                                <div class="progress-bar bg-info" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%;"><span class="sr-only">80%</span></div>
+                                                <div class="progress-bar bg-info" aria-valuenow="{{ d.insult * 100 }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ d.insult * 100 }}%;"><span class="sr-only">{{ d.insult * 100 }}%</span></div>
                                             </div>
-                                            <h4 class="small font-weight-bold">Threat<span class="float-right">100%</span></h4>
+                                            <h4 class="small font-weight-bold">Identity Hate<span class="float-right">{{ "%.1f"|format(d.identity_hate * 100) }}%</span></h4>
                                             <div class="progress progress-sm mb-3">
-                                                <div class="progress-bar bg-success" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"><span class="sr-only">100%</span></div>
+                                                <div class="progress-bar bg-dark" aria-valuenow="{{ d.identity_hate * 100 }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ d.identity_hate * 100 }}%;"><span class="sr-only">{{ d.identity_hate * 100 }}%</span></div>
                                             </div>
                                         </div>
                                     </div>

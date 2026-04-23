@@ -212,6 +212,7 @@
     let scannedCount = 0;
     let flaggedCount = 0;
     let reportedCount = 0;
+    let allFlaggedResults = [];  // Persistent store of ALL flagged results for reporting
 
     const processedElements = new WeakSet();
     const processedTextNodes = new WeakSet();
@@ -351,27 +352,63 @@
         if (isOrphaned()) return { results: [], stats: { scanned: 0, flagged: 0 } };
 
         const autoblur = config.autoblur !== false;
+        const isManualScan = config.manual === true;
+
+        // For manual scans, we also want to re-collect already-flagged elements
+        // so the popup can display them
         const textElements = getPlatformTextElements();
         const results = [];
-        let totalScanned = 0;
-        let totalFlagged = 0;
 
         textElements.forEach(({ text, element, textNode }) => {
             scannedCount++;
             const classification = classifyText(text);
             if (classification) {
-                results.push({
+                const entry = {
                     text: text,
                     level: classification.level,
                     score: classification.score,
                     keyword: classification.keyword,
                     platform: CURRENT_PLATFORM.key
-                });
+                };
+                results.push(entry);
                 applyBlur(element, textNode, classification.level, autoblur);
                 if (element) processedElements.add(element);
             }
         });
 
+        // For manual scan, also include previously flagged elements that are still on page
+        if (isManualScan) {
+            const existingFlagged = document.querySelectorAll('[data-codar-flagged]');
+            existingFlagged.forEach(el => {
+                const text = (el.innerText || el.textContent || '').trim();
+                if (text.length < 5) return;
+                // Only add if not already in results
+                const isDuplicate = results.some(r => r.text === text);
+                if (!isDuplicate) {
+                    const level = el.getAttribute('data-codar-flagged');
+                    const classification = classifyText(text);
+                    results.push({
+                        text: text,
+                        level: level || 'warning',
+                        score: classification ? classification.score : 0.5,
+                        keyword: classification ? classification.keyword : 'previously_flagged',
+                        platform: CURRENT_PLATFORM.key
+                    });
+                }
+            });
+        }
+
+        // Store all results persistently
+        if (results.length > 0) {
+            // Merge new results, avoiding duplicates by text content
+            results.forEach(r => {
+                if (!allFlaggedResults.some(existing => existing.text === r.text)) {
+                    allFlaggedResults.push(r);
+                }
+            });
+        }
+
+        flaggedCount = allFlaggedResults.length;
         results.sort((a, b) => b.score - a.score);
         
         // Update background badge
@@ -392,7 +429,7 @@
 
             if (message.action === 'scan') {
                 chrome.storage.local.get(['codar_autoblur'], (data) => {
-                    const result = scanPage({ autoblur: data.codar_autoblur });
+                    const result = scanPage({ autoblur: data.codar_autoblur, manual: true });
                     sendResponse(result);
                 });
                 return true;
